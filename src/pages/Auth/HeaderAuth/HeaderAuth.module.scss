@@ -1,0 +1,28 @@
+.container {
+}
+
+.content {
+    width: 1200px;
+    max-width: 100%;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 0;
+}
+
+.title {
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+.help {
+    font-size: 1.8rem;
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+
+    & p {
+        margin-right: 12px;
+    }
+}

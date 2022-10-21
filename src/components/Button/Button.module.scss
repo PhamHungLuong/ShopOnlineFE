@@ -1,0 +1,24 @@
+.container {
+    min-width: 78px;
+    font-size: 1.6rem;
+    cursor: pointer;
+    font-weight: 600;
+    padding: 10px 0;
+    border-radius: 6px;
+    border: none;
+    text-align: center;
+
+    &.primary {
+        background-color: var(--primary-color);
+        color: white;
+
+        &:hover {
+            opacity: 0.8;
+        }
+    }
+
+    &.disable {
+        pointer-events: none;
+        opacity: 0.5;
+    }
+}

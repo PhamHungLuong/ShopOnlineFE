@@ -1,0 +1,135 @@
+.container {
+    width: 100%;
+    background-color: var(--primary-color);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    margin-bottom: 24px;
+}
+
+.header {
+    width: 1200px;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.sub-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.list-social {
+    list-style: none;
+    display: flex;
+    padding: 2px 0;
+    align-items: center;
+
+    li {
+        border-right: 1px solid #f18f7e;
+    }
+
+    .item-social {
+        font-size: 1.2rem;
+        color: var(--text-white);
+        font-weight: 500;
+        margin: 0 10px;
+
+        .icon {
+            margin-right: 6px;
+        }
+    }
+}
+
+.list-function {
+    list-style: none;
+    display: flex;
+    padding: 2px 0;
+    align-items: center;
+
+    li {
+        border-right: 1px solid #f18f7e;
+    }
+
+    .item-function {
+        font-size: 1.2rem;
+        color: var(--text-white);
+        font-weight: 500;
+        margin: 0 10px;
+
+        .icon {
+            margin-right: 6px;
+        }
+    }
+}
+
+.func-account {
+    position: relative;
+    z-index: 1;
+
+    &:hover .list-func {
+        display: flex;
+    }
+}
+
+.list-func {
+    position: absolute;
+    right: 0;
+    display: none;
+    flex-direction: column;
+    animation: fadeIn 0.1s linear;
+
+    .item-func {
+        min-width: 120px;
+        font-size: 1.2rem;
+        border-radius: 0;
+        padding: 10px 6px;
+        background-color: white;
+
+        &:hover {
+            background-color: rgb(223, 222, 222);
+        }
+    }
+}
+
+.main-header {
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    color: var(--text-white);
+    flex: 1;
+
+    .icon {
+        font-size: 5.4rem;
+    }
+
+    .text {
+        font-size: 3.4rem;
+        margin-left: 2rem;
+        margin-top: 8px;
+        font-weight: 600;
+        letter-spacing: 0.8px;
+    }
+}
+
+.search {
+    flex: 3;
+}
+
+.cart {
+    margin: 0 40px;
+    margin-top: 8px;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}

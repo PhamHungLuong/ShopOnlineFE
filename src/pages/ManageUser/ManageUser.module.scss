@@ -1,0 +1,43 @@
+.container {
+    width: 1200px;
+    max-width: 100%;
+    margin: 0 auto;
+    background-color: white;
+    margin-bottom: 24px;
+}
+
+.header {
+    font-weight: 600;
+    font-size: 2rem;
+    padding: 28px 36px;
+    border-bottom: 1px solid rgb(233, 232, 232);
+}
+
+.content {
+    margin: 24px 36px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.user {
+    width: 16.67%;
+    text-align: center;
+    margin: 12px 44px;
+
+    .image {
+        border-radius: 50%;
+        width: 94px;
+        height: 94px;
+    }
+
+    .btn {
+        padding-left: 24px;
+        padding-right: 24px;
+        background-color: red;
+        color: white;
+
+        &:hover {
+            opacity: 0.7;
+        }
+    }
+}

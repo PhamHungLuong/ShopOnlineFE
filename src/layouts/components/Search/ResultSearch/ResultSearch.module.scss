@@ -1,0 +1,18 @@
+.container {
+    display: block;
+    padding: 12px 16px;
+
+    &:hover {
+        background-color: rgb(209, 209, 209);
+    }
+
+    &:first-child {
+        border-top-left-radius: 6px;
+        border-top-right-radius: 6px;
+    }
+
+    &:last-child {
+        border-bottom-left-radius: 6px;
+        border-bottom-right-radius: 6px;
+    }
+}

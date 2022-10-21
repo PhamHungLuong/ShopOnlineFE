@@ -1,0 +1,38 @@
+.container {
+}
+
+.content {
+    background-color: var(--primary-color);
+}
+
+.background {
+    position: relative;
+    width: 1100px;
+    margin: 0 auto;
+    height: 600px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-image: url('https://s3.ap-southeast-1.amazonaws.com/adpia.vn/photos/shares/PC/shopee-sale-88.jpg');
+}
+
+.form {
+    position: absolute;
+    background-color: white;
+    width: 300px;
+    right: 16%;
+    top: 12%;
+    padding: 12px;
+    border-radius: 12px;
+
+    .header {
+        text-align: center;
+        font-size: 2rem;
+        font-weight: 600;
+        padding: 12px 0;
+    }
+
+    .btn-login {
+        width: 100%;
+    }
+}

@@ -1,0 +1,107 @@
+.container {
+    background-color: white;
+    width: 1200px;
+    max-width: 100%;
+    margin: 20px auto;
+    border-radius: 12px;
+}
+
+.content {
+    padding: 12px 36px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgb(196, 196, 196);
+}
+
+.info {
+    display: flex;
+    align-items: flex-start;
+}
+
+.image {
+    width: 100px;
+    height: 100px;
+}
+
+.text {
+    margin-left: 24px;
+    margin-top: 24px;
+    .name {
+        font-size: 2.2rem;
+    }
+
+    .amount {
+        font-size: 1.5rem;
+        color: #919191;
+    }
+}
+
+.amount {
+    display: flex;
+    align-items: center;
+
+    .number {
+        padding: 6px 32px;
+        border: 1px solid #b9b5b5;
+        margin: 0 9px;
+        border-radius: 6px;
+    }
+
+    .btn-number {
+        background-color: white;
+        border: 1px solid #b9b5b5;
+        color: var(--primary-color);
+
+        &:hover {
+            background-color: rgb(240, 239, 239);
+        }
+    }
+
+    .accept-edit-btn {
+        padding-left: 12px;
+        padding-right: 12px;
+        margin-left: 12px;
+    }
+}
+
+.price {
+    color: var(--primary-color);
+}
+
+.button {
+    padding: 0 12px 0 12px;
+
+    .edit {
+        margin: 0 6px;
+        padding: 10px;
+        color: rgb(99, 10, 10);
+        border: 2px solid var(--primary-color);
+        background-color: white;
+    }
+
+    .delete {
+        margin: 0 6px;
+        background-color: red;
+        color: white;
+    }
+}
+
+.payment {
+    margin: 0 12px;
+    padding: 12px 12px;
+    display: flex;
+    flex-direction: row-reverse;
+
+    .btn {
+        padding: 12px 8px;
+    }
+
+    .payment-success {
+        background-color: white;
+        color: var(--primary-color);
+        font-weight: 600;
+        padding: 4px 8px;
+        border-radius: 12px;
+    }
+}
