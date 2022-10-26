@@ -20,11 +20,17 @@ function Input({
     onChange,
     rows,
     disabled,
+    getIsValid,
 }) {
     const [isValid, setIsValid] = useState(true);
 
     const validatorHandler = () => {
         setIsValid(validate(value, validators));
+    };
+
+    const inputChangeHandler = (e) => {
+        onChange(e);
+        getIsValid(validate(value, validators));
     };
 
     const children =
@@ -35,7 +41,7 @@ function Input({
                 placeholder={placeholder}
                 type={type}
                 value={value}
-                onChange={onChange}
+                onChange={inputChangeHandler}
                 onBlur={validatorHandler}
                 disabled={disabled}
             />

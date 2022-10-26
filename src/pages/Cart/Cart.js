@@ -28,9 +28,14 @@ function Cart() {
     }, []);
 
     const cartDeleteHandler = (deleteCartId) => {
-        setCarts((prevCarts) => {
-            prevCarts.filter((cart) => cart.id !== deleteCartId);
+        let currentCart = [];
+        carts.forEach((cart) => {
+            if (cart.id !== deleteCartId) {
+                currentCart.push(cart);
+            }
         });
+
+        setCarts(currentCart);
     };
 
     console.log(carts);

@@ -1,27 +1,29 @@
 import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCartShopping } from '@fortawesome/free-solid-svg-icons';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 
 import CartItem from './CartItem/CartItem';
 import Image from '../../../components/Image/Image';
 import emptyCart from '../../../assets/emptyCart.png';
 import styles from './Cart.module.scss';
+import { userContext } from '../../../context/userContext';
 
 const cx = classNames.bind(styles);
 
 function Cart() {
     const [carts, setCarts] = useState([]);
+    const infoUserContext = useContext(userContext);
 
-    const userId = '633d2f3e655a73ee515398ea';
+    const userId = infoUserContext.userId;
 
     useEffect(() => {
         const fetchApi = async () => {
             try {
-                const response = await axios.get(`http://localhost:5000/api/cart/${userId}`);
+                // const response = await axios.get(`http://localhost:5000/api/cart/${userId}`);
 
-                setCarts(response.data.cartProducts);
+                // setCarts(response.data.cartProducts);
             } catch (err) {
                 console.log(err);
             }

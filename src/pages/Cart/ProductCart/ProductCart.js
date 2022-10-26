@@ -16,7 +16,7 @@ function ProductCart({ title, quantity, price, isPayment, onDeleteCart }) {
     const [isPaid, setIsPaid] = useState(isPayment);
     const [isShowEdit, setIsShowEdit] = useState(false);
 
-    const cartId = '63510546798157e529f0a98f';
+    const cartId = '63516c9003348ecb2ed5d020';
 
     const notify = () => {
         toast.success('Paid Success', {
@@ -73,8 +73,8 @@ function ProductCart({ title, quantity, price, isPayment, onDeleteCart }) {
 
     const deleteHandlerApi = () => {
         try {
-            // axios.delete(`http://localhost:5000/api/cart/${cartId}`);
             onDeleteCart(cartId);
+            axios.delete(`http://localhost:5000/api/cart/${cartId}`);
         } catch (err) {
             console.log(err);
         }

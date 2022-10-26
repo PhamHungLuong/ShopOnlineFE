@@ -1,7 +1,9 @@
 import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEarth, faGear, faQuestion, faShoppingBag } from '@fortawesome/free-solid-svg-icons';
+import { useContext } from 'react';
 
+import { userContext } from '../../../context/userContext';
 import styles from './Header.module.scss';
 import Button from '../../../components/Button/Button';
 import routes from '../../../configs/index';
@@ -11,6 +13,8 @@ import Cart from '../Cart';
 const cx = classNames.bind(styles);
 
 function Header() {
+    const infoUserContext = useContext(userContext);
+
     return (
         <header className={cx('container')}>
             <div className={cx('header')}>
@@ -53,7 +57,40 @@ function Header() {
                                     Hỗ trợ
                                 </Button>
                             </li>
-                            {false ? (
+                            {infoUserContext.isLoggedIn ? (
+                                <>
+                                    <li className={cx('func-account')}>
+                                        <Button className={cx('item-function')} to="/">
+                                            {infoUserContext.name}
+                                        </Button>
+                                        <div className={cx('list-func')}>
+                                            <Button className={cx('item-func')} to="/profile">
+                                                Thong tin Tai Khoan
+                                            </Button>
+                                            {infoUserContext.isAdmin ? (
+                                                <>
+                                                    <Button className={cx('item-func')} to="/">
+                                                        Quản lý người dùng
+                                                    </Button>
+                                                    <Button className={cx('item-func')} to="/">
+                                                        Quản lý sản phẩm
+                                                    </Button>
+                                                </>
+                                            ) : (
+                                                <Button className={cx('item-func')} to="/">
+                                                    Quản lý sản phẩm
+                                                </Button>
+                                            )}
+                                            <Button
+                                                className={cx('item-func')}
+                                                onClick={infoUserContext.logOut}
+                                            >
+                                                Đăng xuất
+                                            </Button>
+                                        </div>
+                                    </li>
+                                </>
+                            ) : (
                                 <>
                                     <li>
                                         <Button
@@ -72,34 +109,6 @@ function Header() {
                                         </Button>
                                     </li>
                                 </>
-                            ) : (
-                                <>
-                                    <li className={cx('func-account')}>
-                                        <Button className={cx('item-function')} to="/">
-                                            Pham Hung Luong
-                                        </Button>
-                                        <div className={cx('list-func')}>
-                                            <Button className={cx('item-func')} to="/profile">
-                                                Thong tin Tai Khoan
-                                            </Button>
-                                            {false ? (
-                                                <>
-                                                    <Button className={cx('item-func')} to="/">
-                                                        Quan ly nguoi dung
-                                                    </Button>
-                                                    <Button className={cx('item-func')} to="/">
-                                                        Quan ly san pham
-                                                    </Button>
-                                                </>
-                                            ) : (
-                                                <Button className={cx('item-func')} to="/">
-                                                    Quan ly san pham
-                                                </Button>
-                                            )}
-                                            <Button className={cx('item-func')}>Dang xuat</Button>
-                                        </div>
-                                    </li>
-                                </>
                             )}
                         </ul>
                     </div>
@@ -110,7 +119,7 @@ function Header() {
                         <div className={cx('icon')}>
                             <FontAwesomeIcon icon={faShoppingBag} />
                         </div>
-                        <div className={cx('text')}>SHOPEE</div>
+                        <div className={cx('text')}>ShopHL</div>
                     </Button>
                     {/* Search */}
                     <div className={cx('search')}>

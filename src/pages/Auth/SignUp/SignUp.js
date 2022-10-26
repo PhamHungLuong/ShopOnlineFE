@@ -1,19 +1,65 @@
 import classNames from 'classnames/bind';
+import { useState, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 import styles from '../Auth.module.scss';
 import HeaderAuth from '../HeaderAuth/HeaderAuth';
 import Footer from '../../../layouts/components/Footer';
 import Button from '../../../components/Button';
 import Input from '../../../components/Input/Input';
+import { userContext } from '../../../context/userContext';
 import {
     VALIDATOR_EMAIL,
-    VALIDATOR_REQUIRE,
     VALIDATOR_MINLENGTH,
+    VALIDATOR_REQUIRE,
 } from '../../../services/validators/validator';
 
 const cx = classNames.bind(styles);
 
 function Login() {
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [isValidName, setIsValidName] = useState(false);
+    const [isValidEmail, setIsValidEmail] = useState(false);
+    const [isValidPassword, setIsValidPassword] = useState(false);
+
+    const infoUserContext = useContext(userContext);
+    let navigate = useNavigate();
+
+    const changeNameHandler = (e) => {
+        setName(e.target.value);
+    };
+
+    const changeEmailHandler = (e) => {
+        setEmail(e.target.value);
+    };
+
+    const changePasswordHandler = (e) => {
+        setPassword(e.target.value);
+    };
+
+    const signupSubmitHandler = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await axios.post('http://localhost:5000/api/signup', {
+                name: name,
+                email: email,
+                password: password,
+            });
+            infoUserContext.logIn(
+                response.data.name,
+                response.data.userId,
+                response.data.isAdmin,
+                response.data.email,
+            );
+        } catch (err) {
+            console.log(err);
+        }
+        navigate('/');
+    };
+
     return (
         <div className={cx('container')}>
             <HeaderAuth title="SIGN UP" />
@@ -26,14 +72,20 @@ function Login() {
                             type="text"
                             id="name"
                             label="Name"
+                            value={name}
+                            onChange={changeNameHandler}
+                            getIsValid={setIsValidName}
                             errorText="Invalid Input, please try again!"
-                            validators={[VALIDATOR_MINLENGTH(5)]}
+                            validators={[VALIDATOR_REQUIRE()]}
                         />
                         <Input
                             element="input"
                             type="input"
                             id="account"
                             label="Account"
+                            value={email}
+                            getIsValid={setIsValidEmail}
+                            onChange={changeEmailHandler}
                             errorText="Invalid Input, please try again!"
                             validators={[VALIDATOR_EMAIL()]}
                         />
@@ -42,13 +94,20 @@ function Login() {
                             type="password"
                             id="password"
                             label="Password"
-                            errorText="Invalid Input, please try again!"
-                            validators={[VALIDATOR_MINLENGTH(6)]}
+                            value={password}
+                            getIsValid={setIsValidPassword}
+                            onChange={changePasswordHandler}
+                            errorText="At lease 6 characters"
+                            validators={[VALIDATOR_MINLENGTH(5)]}
                         />
-                        <Button primary className={cx('btn-login')}>
+                        <Button
+                            disable={!isValidEmail && !isValidName && !isValidPassword}
+                            onClick={signupSubmitHandler}
+                            primary
+                            className={cx('btn-login')}
+                        >
                             SIGN UP
                         </Button>
-                        <div className={cx('footer')}></div>
                     </form>
                 </div>
             </div>

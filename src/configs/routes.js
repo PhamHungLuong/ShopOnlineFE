@@ -2,7 +2,7 @@ const routes = {
     home: '/',
     login: '/login',
     signup: '/signup',
-    product: '/product',
+    product: '/product/:pid',
     cart: '/cart',
     profile: '/profile',
     adminUser: '/admin/user',

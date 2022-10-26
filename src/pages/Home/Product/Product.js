@@ -4,16 +4,17 @@ import PropTypes from 'prop-types';
 import styles from './product.module.scss';
 import Image from '../../../components/Image';
 import Button from '../../../components/Button';
+import { Link } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
-function Product({ title, price, src }) {
+function Product({ id, title, price, src }) {
     const addProductToCart = () => {
-        console.log('Added');
+        console.log('add');
     };
 
     return (
-        <div className={cx('container')}>
+        <Link className={cx('container')} to={`product/${id}`}>
             <div className={cx('view')}>
                 <Image className={cx('image')} type="product" alt="image product" src={src} />
             </div>
@@ -22,15 +23,16 @@ function Product({ title, price, src }) {
                 <div className={cx('sub-content')}>
                     <span className={cx('price')}>{price ? price : 0}</span>
                     <Button className={cx('btn')} primary onClick={addProductToCart}>
-                        Add to cart
+                        Xem sản phẩm
                     </Button>
                 </div>
             </div>
-        </div>
+        </Link>
     );
 }
 
 Product.propTypes = {
+    id: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
     price: PropTypes.number.isRequired,
     src: PropTypes.string.isRequired,

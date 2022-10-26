@@ -1,6 +1,6 @@
 import classNames from 'classnames/bind';
 import PropsType from 'prop-types';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
 
@@ -8,15 +8,23 @@ import styles from './Comment.module.scss';
 import Image from '../../../components/Image';
 import Button from '../../../components/Button';
 import Input from '../../../components/Input';
+import { VALIDATOR_REQUIRE } from '../../../services/validators/validator';
 
 const cx = classNames.bind(styles);
 
-function Comment({ src, name, content }) {
+function Comment({ id, src, name, content }) {
     const [isShowFunc, setIsShowFunc] = useState(false);
     const [isShowEditComment, setIsShowEditComment] = useState(false);
 
+    const [valueComment, setValueComment] = useState(content);
+
     const showFuncHandler = () => {
         setIsShowFunc(!isShowFunc);
+    };
+
+    const changeCommentHandler = (e) => {
+        setValueComment(e.target.value);
+        console.log(e.target.value);
     };
 
     const showEditCommentHandler = () => {
@@ -31,14 +39,10 @@ function Comment({ src, name, content }) {
     return (
         <div className={cx('container')}>
             <div className={cx('comment')}>
-                <Image
-                    className={cx('image')}
-                    type="user"
-                    src="https://haycafe.vn/wp-content/uploads/2022/02/Anh-gai-xinh-Viet-Nam.jpg"
-                />
+                <Image className={cx('image')} type="user" src={src ? src : ''} />
                 <div className={cx('info')}>
-                    <div className={cx('name')}>Pham Hung Luong</div>
-                    <div className={cx('content')}>Ao dep qua!!!</div>
+                    <div className={cx('name')}>{name}</div>
+                    <div className={cx('content')}>{content}</div>
                 </div>
             </div>
             {true && (
@@ -58,7 +62,15 @@ function Comment({ src, name, content }) {
             )}
             {isShowEditComment && (
                 <div className={cx('input-editor')}>
-                    <Input element="input" />
+                    <Input
+                        element="input"
+                        type="text"
+                        id="comment"
+                        onChange={changeCommentHandler}
+                        value={valueComment}
+                        errorText="At lease 1 characters"
+                        validators={[VALIDATOR_REQUIRE()]}
+                    />
                     <Button primary className={cx('btn')} onClick={closeEditCommentHander}>
                         Huy
                     </Button>
@@ -72,6 +84,7 @@ function Comment({ src, name, content }) {
 }
 
 Comment.propsType = {
+    id: PropsType.string.isRequired,
     src: PropsType.string.isRequired,
     name: PropsType.string.isRequired,
     content: PropsType.string.isRequired,
