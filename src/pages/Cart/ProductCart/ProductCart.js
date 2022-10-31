@@ -1,35 +1,32 @@
 import classNames from 'classnames/bind';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
-import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import axios from 'axios';
 
+import { cartContext } from '../../../context/cartContext';
 import styles from './ProductCart.module.scss';
 import Image from '../../../components/Image';
 import Button from '../../../components/Button';
-import axios from 'axios';
+import {
+    notifyDisplay,
+    ToastMessageContainer,
+} from '../../../components/ToastMessage/ToastMessage';
 
 const cx = classNames.bind(styles);
 
-function ProductCart({ title, quantity, price, isPayment, onDeleteCart }) {
+function ProductCart({ title, quantity, price, isPayment, onDeleteCart, id }) {
     const [amount, setAmount] = useState(quantity);
+    const [newAmount, setNewAmount] = useState(quantity);
     const [isPaid, setIsPaid] = useState(isPayment);
     const [isShowEdit, setIsShowEdit] = useState(false);
 
-    const cartId = '63516c9003348ecb2ed5d020';
+    const cartProductContext = useContext(cartContext);
 
-    const notify = () => {
-        toast.success('Paid Success', {
-            position: 'top-right',
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: 'dark',
-        });
-    };
+    const notifyPayment = notifyDisplay('success', 'Thanh Toán Thành Công');
+    const notifyDelete = notifyDisplay('success', 'Xoa san pham thanh cong');
+    const notifyEditSuccess = notifyDisplay('success', 'Sủa giỏ hàng thành công');
+    const notifyError = notifyDisplay('error', 'Vui lòng thử lại');
 
     const prevAmountHandler = () => {
         setAmount((prev) => {
@@ -51,32 +48,36 @@ function ProductCart({ title, quantity, price, isPayment, onDeleteCart }) {
 
     const paidCartHandlerApi = async () => {
         try {
-            const response = await axios.patch(`http://localhost:5000/api/cart/${cartId}`);
+            const response = await axios.patch(`http://localhost:5000/api/cart/payment/${id}`);
             setIsPaid(response.data.cartProduct.isPayment);
-            notify();
+            cartProductContext.paymentCartHandler(id);
+            notifyPayment();
         } catch (err) {
-            console.log(err);
+            notifyError();
         }
     };
 
     const acceptEditApi = async () => {
         try {
-            const response = await axios.post(`http://localhost:5000/api/cart/${cartId}`, {
+            const response = await axios.patch(`http://localhost:5000/api/cart/${id}`, {
                 amount: amount,
+                headers: { 'Content-Type': 'application/json' },
             });
-            quantity = response.data.cartProduct.amount;
-            setAmount(response.data.cartProduct.amount);
+            setNewAmount(response.data.cartProduct.amount);
+            showEditHandler();
+            notifyEditSuccess();
         } catch (err) {
-            console.log(err);
+            notifyError();
         }
     };
 
-    const deleteHandlerApi = () => {
+    const deleteHandlerApi = async () => {
         try {
-            onDeleteCart(cartId);
-            axios.delete(`http://localhost:5000/api/cart/${cartId}`);
+            onDeleteCart(id);
+            await axios.delete(`http://localhost:5000/api/cart/${id}`);
+            notifyDelete();
         } catch (err) {
-            console.log(err);
+            notifyError();
         }
     };
 
@@ -91,7 +92,7 @@ function ProductCart({ title, quantity, price, isPayment, onDeleteCart }) {
                     />
                     <div className={cx('text')}>
                         <div className={cx('name')}>{title}</div>
-                        <div className={cx('amount')}>So luong ban dau : {quantity}</div>
+                        <div className={cx('amount')}>So luong ban dau : {newAmount}</div>
                     </div>
                 </div>
                 {isShowEdit && !isPaid && (
@@ -107,7 +108,7 @@ function ProductCart({ title, quantity, price, isPayment, onDeleteCart }) {
                             <Button
                                 primary
                                 className={cx('accept-edit-btn')}
-                                disable={amount === quantity ? true : false}
+                                disable={amount === newAmount || amount === 0 ? true : false}
                                 onClick={acceptEditApi}
                             >
                                 Accept Edit
@@ -115,7 +116,7 @@ function ProductCart({ title, quantity, price, isPayment, onDeleteCart }) {
                         )}
                     </div>
                 )}
-                <div className={cx('price')}>Gia: {price * amount}</div>
+                <div className={cx('price')}>{!isPaid && `Gia: ${newAmount * price}`}</div>
                 <div className={cx('button')}>
                     {!isPaid && (
                         <Button className={cx('edit')} onClick={showEditHandler}>
@@ -134,18 +135,7 @@ function ProductCart({ title, quantity, price, isPayment, onDeleteCart }) {
                     </Button>
                 ) : (
                     <div>
-                        <ToastContainer
-                            position="top-right"
-                            autoClose={5000}
-                            hideProgressBar={false}
-                            newestOnTop={false}
-                            closeOnClick
-                            rtl={false}
-                            pauseOnFocusLoss
-                            draggable
-                            pauseOnHover
-                            theme="dark"
-                        />
+                        <ToastMessageContainer />
                         <div className={cx('payment-success')}>Paid Success</div>
                     </div>
                 )}
@@ -155,6 +145,7 @@ function ProductCart({ title, quantity, price, isPayment, onDeleteCart }) {
 }
 
 ProductCart.propTypes = {
+    id: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
     quantity: PropTypes.number.isRequired,
     price: PropTypes.number.isRequired,

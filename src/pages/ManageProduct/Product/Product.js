@@ -1,36 +1,45 @@
 import classNames from 'classnames/bind';
 import PropTypes from 'prop-types';
-import { useState } from 'react';
-import { ToastContainer, toast } from 'react-toastify';
+import { useState, useContext } from 'react';
 import 'react-toastify/dist/ReactToastify.css';
 
 import styles from './Product.module.scss';
 import Image from '../../../components/Image';
 import Button from '../../../components/Button';
 import FormProduct from '../FromProduct/FormProduct';
+import { cartContext } from '../../../context/cartContext';
+import {
+    notifyDisplay,
+    ToastMessageContainer,
+} from '../../../components/ToastMessage/ToastMessage';
+import axios from 'axios';
+import { userContext } from '../../../context/userContext';
 
 const cx = classNames.bind(styles);
 
-function Product({ title, description, price }) {
+function Product({ id, title, description, price, deleteProduct }) {
     const [isShowFormPost, setIsShowFormPost] = useState(false);
-    const [showToastMessage, setShowToastMessage] = useState(false);
+
+    const cartProductContext = useContext(cartContext);
+    const userInfoContext = useContext(userContext);
 
     const showFormHandler = () => {
         setIsShowFormPost(!isShowFormPost);
     };
 
-    const notify = () => {
-        setShowToastMessage(true);
-        toast.success('Delete Success !', {
-            position: 'top-right',
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: 'light',
-        });
+    const notifyDeleteProduct = notifyDisplay('success', 'Xoa san Pham Thanh Cong');
+    const notifyError = notifyDisplay('error', 'Vui long thu lai');
+
+    const deleteProductHandler = async () => {
+        try {
+            axios.delete(`http://localhost:5000/api/product/${id}`);
+            deleteProduct(id);
+            cartProductContext.removeCartByUserId(id);
+        } catch (err) {
+            notifyError();
+        }
+
+        notifyDeleteProduct();
     };
 
     return (
@@ -45,15 +54,17 @@ function Product({ title, description, price }) {
                         />
                         <div className={cx('text')}>
                             <span className={cx('name')}>{title}</span>
-                            <span className={cx('description')}>{description}</span>
-                            <span className={cx('price')}>{price}</span>
+                            <span className={cx('description')}>Mo ta: {description}</span>
+                            <span className={cx('price')}>Gia: {price}</span>
                         </div>
                     </div>
                     <div className={cx('button')}>
-                        <Button className={cx('btn-edit')} onClick={showFormHandler}>
-                            {!isShowFormPost ? 'Edit Product' : 'End Editing'}
-                        </Button>
-                        <Button className={cx('btn-delete')} onClick={notify}>
+                        {!userInfoContext.isAdmin && (
+                            <Button className={cx('btn-edit')} onClick={showFormHandler}>
+                                {!isShowFormPost ? 'Edit Product' : 'End Editing'}
+                            </Button>
+                        )}
+                        <Button className={cx('btn-delete')} onClick={deleteProductHandler}>
                             {' '}
                             Delete Product{' '}
                         </Button>
@@ -61,25 +72,13 @@ function Product({ title, description, price }) {
                 </div>
             </div>
             {isShowFormPost && <FormProduct />}
-            {showToastMessage && (
-                <ToastContainer
-                    position="top-left"
-                    autoClose={5000}
-                    hideProgressBar
-                    newestOnTop={false}
-                    closeOnClick={false}
-                    rtl={false}
-                    pauseOnFocusLoss
-                    draggable
-                    pauseOnHover={false}
-                    theme="light"
-                />
-            )}
+            <ToastMessageContainer />
         </div>
     );
 }
 
 Product.propTypes = {
+    id: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
     description: PropTypes.string.isRequired,
     price: PropTypes.number.isRequired,

@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import classNames from 'classnames/bind';
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 
@@ -10,9 +10,9 @@ import Button from '../../components/Button';
 import Comment from './Comment/Comment';
 import Input from '../../components/Input';
 import { userContext } from '../../context/userContext';
+import { cartContext } from '../../context/cartContext';
 import { VALIDATOR_REQUIRE } from '../../services/validators/validator';
-import { notifyDisplay } from '../../components/ToastMessage/ToastMessage';
-
+import { notifyDisplay, ToastMessageContainer } from '../../components/ToastMessage/ToastMessage';
 const cx = classNames.bind(styles);
 
 const DUMMY_SIZE = ['M', 'L', 'XL', 'XLL'];
@@ -21,20 +21,26 @@ function Product() {
     // const [listSize, setListSize] = useState([]);
     const [activeSize, setActiveSize] = useState();
     const [amount, setAmount] = useState(0);
-
     const [product, setProduct] = useState();
     const [creator, setCreator] = useState();
-
     const [comments, setComments] = useState();
-
     const [commentValue, setCommentValue] = useState('');
-    const [isValidComment, setIsValidComment] = useState(false);
 
     const infoUserContext = useContext(userContext);
+    const cartProductContext = useContext(cartContext);
 
-    const changeCommentHandler = (e) => {
-        setCommentValue(e.target.value);
-    };
+    const notify = notifyDisplay('success', 'Bình luận thành công');
+    const notifyInvalidAmount = notifyDisplay('error', 'Số lượng không thể bằng không');
+    const notifyCardSuccess = notifyDisplay('success', 'Thêm vào giỏ hàng thành công');
+    const notifyMoreProduct = notifyDisplay('error', 'Tính năng đang phát triển');
+    const notifyError = notifyDisplay('error', 'Vui long thu lai');
+
+    const changeCommentHandler = useCallback(
+        (e) => {
+            setCommentValue(e.target.value);
+        },
+        [commentValue],
+    );
 
     const { pid } = useParams();
 
@@ -45,19 +51,6 @@ function Product() {
 
                 setProduct(response.data.product);
                 setCreator(response.data.product.creator);
-
-                //bug
-                let tempSize = '';
-                for (let i in response.data.product.size) {
-                    if (response.data.product.size[i] !== ' ') {
-                        tempSize = tempSize + response.data.product.size[i];
-                        if (i === response.data.product.size.length - 1) {
-                            console.log(tempSize);
-                        }
-                    } else {
-                        tempSize = '';
-                    }
-                }
             } catch (err) {
                 console.log(err);
             }
@@ -100,20 +93,46 @@ function Product() {
         setAmount((prev) => prev + 1);
     };
 
-    const postCommentApiHandler = () => {
-        const fetchApi = async () => {
-            const response = await axios.post('http://localhost:5000/api/comment', {
-                content: commentValue,
-                ofProduct: pid,
-                creator: '63564694a7f22abbf314299b',
-            });
+    const postCommentApiHandler = async () => {
+        const response = await axios.post('http://localhost:5000/api/comment', {
+            content: commentValue,
+            ofProduct: pid,
+            creator: infoUserContext.userId,
+        });
+        setCommentValue('');
+        setComments((prevComments) => {
+            return [...prevComments, response.data.comment];
+        });
+        notify();
+    };
 
-            setComments((prevComments) => {
-                return [...prevComments, response.data.comment];
-            });
-        };
+    const deleteCommentApiHandler = (commentDeleteId) => {
+        let currentComments = [];
+        comments.forEach((comment) => {
+            if (comment.id !== commentDeleteId) {
+                currentComments.push(comment);
+            }
+        });
 
-        fetchApi();
+        setComments(currentComments);
+    };
+
+    const addProductToCard = async () => {
+        if (amount === 0) {
+            notifyInvalidAmount();
+        } else {
+            try {
+                const response = await axios.post('http://localhost:5000/api/cart/add', {
+                    amount: amount,
+                    productId: pid,
+                    owner: infoUserContext.userId,
+                });
+                notifyCardSuccess();
+                cartProductContext.addCart(response.data.product);
+            } catch (err) {
+                notifyError();
+            }
+        }
     };
 
     return (
@@ -129,8 +148,10 @@ function Product() {
                 <div className={cx('content')}>
                     <div>
                         <div className={cx('title')}>{product && product.name}</div>
-                        <div className={cx('price')}>{product && product.price}</div>
-                        <div className={cx('description')}>{product && product.description}</div>
+                        <div className={cx('price')}>Giá: {product && product.price} VND</div>
+                        <div className={cx('description')}>
+                            Mô tả: {product && product.description}
+                        </div>
                         <div className={cx('list-size')}>
                             {DUMMY_SIZE.map((size, index) => {
                                 return (
@@ -148,17 +169,29 @@ function Product() {
                                 );
                             })}
                         </div>
-                        <div className={cx('amount')}>
-                            <Button className={cx('btn-number')} onClick={nextAmountHandler}>
-                                +
-                            </Button>
-                            <span className={cx('number')}>{amount}</span>
-                            <Button className={cx('btn-number')} onClick={prevAmountHandler}>
-                                -
-                            </Button>
-                        </div>
+                        {!infoUserContext.isAdmin && (
+                            <div className={cx('amount')}>
+                                <Button className={cx('btn-number')} onClick={nextAmountHandler}>
+                                    +
+                                </Button>
+                                <span className={cx('number')}>{amount}</span>
+                                <Button className={cx('btn-number')} onClick={prevAmountHandler}>
+                                    -
+                                </Button>
+                            </div>
+                        )}
                     </div>
-                    <Button className={cx('btn-addCart')}>Thêm vào giỏ hàng</Button>
+                    {infoUserContext.isLoggedIn ? (
+                        !infoUserContext.isAdmin && (
+                            <Button className={cx('btn-addCart')} onClick={addProductToCard}>
+                                Thêm vào giỏ hàng
+                            </Button>
+                        )
+                    ) : (
+                        <Button className={cx('btn-addCart')} to="/login">
+                            Đăng nhập để thêm vào giỏ hàng
+                        </Button>
+                    )}
                 </div>
             </div>
             <div className={cx('creator')}>
@@ -170,34 +203,41 @@ function Product() {
                     />
                     <div className={cx('name')}>{creator && creator.name}</div>
                 </div>
-                <Button primary className={cx('btn')}>
+                <Button
+                    primary
+                    className={cx('btn')}
+                    onClick={() => {
+                        notifyMoreProduct();
+                    }}
+                >
                     More Products
                 </Button>
             </div>
             <div className={cx('comment')}>
                 <div className={cx('title')}>Đánh giá sản phẩm</div>
-                <div className={cx('post-comment')}>
-                    <Input
-                        className={cx('input')}
-                        type="text"
-                        element="input"
-                        placeholder="Comment here"
-                        id="comment"
-                        value={commentValue}
-                        onChange={changeCommentHandler}
-                        getIsValid={setIsValidComment}
-                        errorText="Invalid Input, please try again!"
-                        validators={[VALIDATOR_REQUIRE()]}
-                    />
-                    <Button
-                        disable={commentValue === '' ? true : false}
-                        className={cx('btn-post')}
-                        primary
-                        onClick={postCommentApiHandler}
-                    >
-                        Dang binh luan
-                    </Button>
-                </div>
+                {infoUserContext.isLoggedIn && (
+                    <div className={cx('post-comment')}>
+                        <Input
+                            className={cx('input')}
+                            type="text"
+                            element="input"
+                            placeholder="Comment here"
+                            id="comment"
+                            value={commentValue}
+                            onChange={changeCommentHandler}
+                            errorText="Invalid Input, please try again!"
+                            validators={[VALIDATOR_REQUIRE()]}
+                        />
+                        <Button
+                            disable={commentValue === '' ? true : false}
+                            className={cx('btn-post')}
+                            primary
+                            onClick={postCommentApiHandler}
+                        >
+                            Dang binh luan
+                        </Button>
+                    </div>
+                )}
                 <div className={cx('list-comment')}>
                     {comments &&
                         comments.map((comment) => {
@@ -208,11 +248,14 @@ function Product() {
                                     src={comment.creator.image}
                                     name={comment.creator.name}
                                     content={comment.content}
+                                    deleteComment={deleteCommentApiHandler}
+                                    creatorId={comment.creator.id}
                                 />
                             );
                         })}
                 </div>
             </div>
+            <ToastMessageContainer />
         </div>
     );
 }

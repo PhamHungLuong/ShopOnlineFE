@@ -14,30 +14,7 @@
 }
 
 .content {
-    margin: 24px 36px;
     display: flex;
     flex-wrap: wrap;
-}
-
-.user {
-    width: 16.67%;
-    text-align: center;
-    margin: 12px 44px;
-
-    .image {
-        border-radius: 50%;
-        width: 94px;
-        height: 94px;
-    }
-
-    .btn {
-        padding-left: 24px;
-        padding-right: 24px;
-        background-color: red;
-        color: white;
-
-        &:hover {
-            opacity: 0.7;
-        }
-    }
+    justify-content: center;
 }

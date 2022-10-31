@@ -1,0 +1,36 @@
+.container {
+    margin: 24px 36px;
+    display: flex;
+    justify-content: center;
+}
+
+.user {
+    text-align: center;
+    margin: 12px 60px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    width: 200px;
+
+    .image {
+        border-radius: 50%;
+        width: 94px;
+        height: 94px;
+    }
+
+    .name {
+        margin: 12px 0;
+        font-weight: 500;
+    }
+
+    .btn {
+        padding-left: 24px;
+        padding-right: 24px;
+        background-color: red;
+        color: white;
+
+        &:hover {
+            opacity: 0.7;
+        }
+    }
+}

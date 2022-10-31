@@ -70,6 +70,17 @@
     &::-webkit-scrollbar-thumb:hover {
         background: #555;
     }
+
+    .btn-login {
+        display: flex;
+        justify-content: space-around;
+        margin: 48px 0;
+
+        .btn {
+            padding-left: 32px;
+            padding-right: 32px;
+        }
+    }
 }
 
 @keyframes fadeIn {

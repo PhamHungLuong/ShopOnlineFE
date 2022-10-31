@@ -6,7 +6,8 @@ import Image from '../../../../components/Image/Image';
 
 const cx = classNames.bind(styles);
 
-function CartItem({ title, price, src, onClick }) {
+function CartItem({ title, price, src, onClick, isPaid }) {
+
     return (
         <div className={cx('container')} onClick={onClick}>
             <div className={cx('list-cart')}>
@@ -17,6 +18,11 @@ function CartItem({ title, price, src, onClick }) {
                         <span className={cx('price')}>{price}</span>
                     </div>
                 </div>
+                {isPaid ? (
+                    <div className={cx('isPayment')}>Đã Thanh Toán</div>
+                ) : (
+                    <div className={cx('isPayment')}>Chưa Thanh Toán</div>
+                )}
             </div>
         </div>
     );
@@ -26,6 +32,7 @@ CartItem.propTypes = {
     title: PropTypes.string.isRequired,
     price: PropTypes.number.isRequired,
     src: PropTypes.string.isRequired,
+    isPaid: PropTypes.bool.isRequired,
     onClick: PropTypes.func,
 };
 

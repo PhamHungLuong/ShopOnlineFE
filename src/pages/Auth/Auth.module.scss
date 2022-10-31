@@ -32,7 +32,20 @@
         padding-top: 12px;
     }
 
-    .btn-login {
+    .btn {
+        margin-top: 14px;
         width: 100%;
+    }
+}
+
+.btn-changePage {
+    font-size: 1.4rem;
+    display: flex;
+    justify-content: flex-end;
+    padding: 0;
+    color: red;
+
+    .icon {
+        margin-left: 6px;
     }
 }

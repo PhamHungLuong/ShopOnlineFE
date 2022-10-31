@@ -8,7 +8,7 @@ const cx = classNames.bind(styles);
 
 function ResultSearch({ content, to, onClick }) {
     return (
-        <Link className={cx('container')} to="/product" onClick={onClick}>
+        <Link className={cx('container')} to={`/product/${to}`} onClick={onClick}>
             {content}
         </Link>
     );

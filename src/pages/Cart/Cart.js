@@ -1,52 +1,30 @@
 import classNames from 'classnames/bind';
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useContext } from 'react';
 
 import styles from './Cart.module.scss';
 import ProductCart from './ProductCart/ProductCart';
 import Image from '../../components/Image';
 import NO_CART from '../../assets/emptyCart.png';
+import { cartContext } from '../../context/cartContext';
+import { ToastMessageContainer } from '../../components/ToastMessage/ToastMessage';
 
 const cx = classNames.bind(styles);
 
 function Cart() {
-    const userId = '635015a7f5cb72a3079e0af8';
-    const [carts, setCarts] = useState();
-
-    useEffect(() => {
-        const fetchApi = async () => {
-            try {
-                const response = await axios.get(`http://localhost:5000/api/cart/${userId}`);
-
-                setCarts(response.data.cartProducts);
-            } catch (err) {
-                console.log(err);
-            }
-        };
-
-        fetchApi();
-    }, []);
+    const cartProductsContext = useContext(cartContext);
 
     const cartDeleteHandler = (deleteCartId) => {
-        let currentCart = [];
-        carts.forEach((cart) => {
-            if (cart.id !== deleteCartId) {
-                currentCart.push(cart);
-            }
-        });
-
-        setCarts(currentCart);
+        cartProductsContext.removeCart(deleteCartId);
     };
-
-    console.log(carts);
 
     return (
         <div className={cx('container')}>
-            {carts ? (
-                carts.map((cart) => {
+            {cartProductsContext.carts ? (
+                cartProductsContext.carts.map((cart) => {
                     return (
                         <ProductCart
                             key={cart.id}
+                            id={cart.id}
                             title={cart.productId.name}
                             quantity={cart.amount}
                             price={cart.productId.price}
@@ -60,6 +38,7 @@ function Cart() {
                     <Image className={cx('image')} src={NO_CART} alt="No Product" />
                 </div>
             )}
+            <ToastMessageContainer />
         </div>
     );
 }

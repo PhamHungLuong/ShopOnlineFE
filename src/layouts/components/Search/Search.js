@@ -91,6 +91,7 @@ function Search() {
                         return (
                             <ResultSearch
                                 key={index}
+                                to={result.id}
                                 content={result.name}
                                 onClick={() => {
                                     setIsShowResult(false);

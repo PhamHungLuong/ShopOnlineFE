@@ -1,6 +1,8 @@
 import classNames from 'classnames/bind';
 import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faAngleRight } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 
 import styles from '../Auth.module.scss';
@@ -100,11 +102,17 @@ function Login() {
                             errorText="At lease 6 characters"
                             validators={[VALIDATOR_MINLENGTH(5)]}
                         />
+                        <Button className={cx('btn-changePage')} to="/login">
+                            LOG IN
+                            <span className={cx('icon')}>
+                                <FontAwesomeIcon icon={faAngleRight} />
+                            </span>
+                        </Button>
                         <Button
                             disable={!isValidEmail && !isValidName && !isValidPassword}
                             onClick={signupSubmitHandler}
                             primary
-                            className={cx('btn-login')}
+                            className={cx('btn')}
                         >
                             SIGN UP
                         </Button>

@@ -1,5 +1,5 @@
 import classNames from 'classnames/bind';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 
 import styles from './Profile.module.scss';
@@ -7,6 +7,7 @@ import Button from '../../components/Button';
 import Input from '../../components/Input/Input';
 import ImagePreview from '../../components/ImagePreview/ImagePreview';
 import { VALIDATOR_REQUIRE } from '../../services/validators/validator';
+import { userContext } from '../../context/userContext';
 
 const cx = classNames.bind(styles);
 
@@ -17,22 +18,22 @@ function Profile() {
     const [imageUrl, setImageUrl] = useState();
     const [fileImage, setFileImage] = useState();
     const [isSaveProfile, setIsSaveProfile] = useState(true);
+    const nameDefault = name;
 
-    const userId = '635015a7f5cb72a3079e0af8';
-
-    const getFileImage = (value) => {
-        setFileImage(value);
-    };
+    const userInfoContext = useContext(userContext);
 
     useEffect(() => {
         const fetchApi = async () => {
             try {
-                const response = await axios.get(`http://localhost:5000/api/user/${userId}`);
+                const response = await axios.get(
+                    `http://localhost:5000/api/user/${userInfoContext.userId}`,
+                );
 
                 setName(response.data.user.name);
                 setEmail(response.data.user.email);
                 setPassword(response.data.user.password);
                 setImageUrl(response.data.user.image);
+                console.log(response.data.user.image);
             } catch (err) {
                 console.log(err);
             }
@@ -41,7 +42,9 @@ function Profile() {
         fetchApi();
     }, []);
 
-    const nameDefault = name;
+    const getFileImage = (value) => {
+        setFileImage(value);
+    };
 
     const emailChangeHandler = (e) => {
         if (nameDefault === e.target.value) {
@@ -58,20 +61,28 @@ function Profile() {
 
     const changeProfileHandler = async (e) => {
         e.preventDefault();
-        const fileReader = new FileReader();
-        fileReader.readAsDataURL(fileImage);
-
-        const formData = new FormData();
-
-        formData.append('image', fileImage);
-        formData.append('name', name);
-        formData.append('password', password);
+        const formDataProfile = new FormData();
+        formDataProfile.append('name', name);
+        formDataProfile.append('password', password);
+        formDataProfile.append('image', fileImage);
         try {
-            const response = await axios.post(`http://localhost:5000/api/user/${userId}`, formData);
+            // const response = await axios.post(
+            //     `http://localhost:5000/api/user/${userInfoContext.userId}`,
+            //     formData,
+            // );
+
+            const response = await axios({
+                method: 'POST',
+                url: `http://localhost:5000/api/user/${userInfoContext.userId}`,
+                data: formDataProfile,
+                headers: { 'Content-Type': 'form-data' },
+            });
 
             setName(response.data.user.name);
             setEmail(response.data.user.email);
             setPassword(response.data.user.password);
+            setImageUrl(response.data.user.image);
+            console.log(response.data.user.image);
         } catch (err) {
             console.log(err);
         }
@@ -100,7 +111,6 @@ function Profile() {
                         label="Email"
                         errorText="Valid Account"
                         value={email}
-                        // onChange={console.log(1)}
                         disabled
                         validators={[VALIDATOR_REQUIRE()]}
                     />
@@ -123,7 +133,7 @@ function Profile() {
                 </form>
 
                 {/* Image Preview */}
-                <ImagePreview getFileImage={getFileImage} src={imageUrl} />
+                <ImagePreview getFileImage={getFileImage} src={!!imageUrl ? imageUrl : undefined} />
             </div>
         </div>
     );

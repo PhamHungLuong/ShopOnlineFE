@@ -1,5 +1,5 @@
 .container {
-    
+    margin-bottom: 12px;
 }
 
 .list-cart {
@@ -39,4 +39,14 @@
         font-size: 1.4rem;
         color: var(--primary-color);
     }
+}
+
+.isPayment {
+    float: right;
+    background-color: red;
+    color: white;
+    font-weight: 600;
+    padding: 0px 14px;
+    margin-right: 12px;
+    border-radius: 6px;
 }

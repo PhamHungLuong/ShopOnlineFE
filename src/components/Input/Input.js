@@ -30,7 +30,9 @@ function Input({
 
     const inputChangeHandler = (e) => {
         onChange(e);
-        getIsValid(validate(value, validators));
+        if (getIsValid) {
+            getIsValid(validate(value, validators));
+        }
     };
 
     const children =

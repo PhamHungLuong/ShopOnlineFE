@@ -2,11 +2,12 @@ import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEarth, faGear, faQuestion, faShoppingBag } from '@fortawesome/free-solid-svg-icons';
 import { useContext } from 'react';
+import { Link } from 'react-router-dom';
 
 import { userContext } from '../../../context/userContext';
 import styles from './Header.module.scss';
 import Button from '../../../components/Button/Button';
-import routes from '../../../configs/index';
+import routes from '../../../configs';
 import Search from '../Search/Search';
 import Cart from '../Cart';
 
@@ -64,24 +65,36 @@ function Header() {
                                             {infoUserContext.name}
                                         </Button>
                                         <div className={cx('list-func')}>
-                                            <Button className={cx('item-func')} to="/profile">
-                                                Thong tin Tai Khoan
-                                            </Button>
+                                            {!infoUserContext.isAdmin && (
+                                                <Button className={cx('item-func')} to="/profile">
+                                                    Thong tin Tai Khoan
+                                                </Button>
+                                            )}
                                             {infoUserContext.isAdmin ? (
                                                 <>
-                                                    <Button className={cx('item-func')} to="/">
+                                                    <Button
+                                                        className={cx('item-func')}
+                                                        to={routes.routes.adminUser}
+                                                    >
                                                         Quản lý người dùng
                                                     </Button>
-                                                    <Button className={cx('item-func')} to="/">
+                                                    <Button
+                                                        className={cx('item-func')}
+                                                        to={routes.routes.adminProduct}
+                                                    >
                                                         Quản lý sản phẩm
                                                     </Button>
                                                 </>
                                             ) : (
-                                                <Button className={cx('item-func')} to="/">
+                                                <Button
+                                                    className={cx('item-func')}
+                                                    to={routes.routes.userProduct}
+                                                >
                                                     Quản lý sản phẩm
                                                 </Button>
                                             )}
                                             <Button
+                                                to="/"
                                                 className={cx('item-func')}
                                                 onClick={infoUserContext.logOut}
                                             >
@@ -127,9 +140,17 @@ function Header() {
                     </div>
 
                     {/* Carts */}
-                    <div className={cx('cart')}>
-                        <Cart />
-                    </div>
+                    {infoUserContext.isLoggedIn ? (
+                        !infoUserContext.isAdmin && (
+                            <Link className={cx('cart')} to="/cart">
+                                <Cart />
+                            </Link>
+                        )
+                    ) : (
+                        <Link className={cx('cart')} to="/login">
+                            <Cart />
+                        </Link>
+                    )}
                 </div>
             </div>
         </header>

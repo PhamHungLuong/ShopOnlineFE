@@ -9,7 +9,7 @@ const cx = classNames.bind(styles);
 
 function ImagePreview({ getFileImage, src }) {
     const [selectedFile, setSelectedFile] = useState();
-    const [preview, setPreview] = useState();
+    const [preview, setPreview] = useState(src);
     const [fileUpload, setFileUpload] = useState();
     const InputImageRef = useRef();
 
@@ -19,12 +19,13 @@ function ImagePreview({ getFileImage, src }) {
             return;
         }
 
-        // let fileReader = new FileReader();
-        // fileReader.readAsDataURL(selectedFile);
+        let fileReader = new FileReader();
+        fileReader.readAsDataURL(selectedFile);
 
-        // fileReader.onload = () => {
-        //     setFileUpload(fileReader.result);
-        // };
+        fileReader.onload = () => {
+            setFileUpload(fileReader.result);
+            getFileImage(fileUpload);
+        };
 
         const objectUrl = URL.createObjectURL(selectedFile);
         setPreview(objectUrl);
@@ -38,23 +39,19 @@ function ImagePreview({ getFileImage, src }) {
             setSelectedFile(undefined);
             return;
         }
-        getFileImage(e.target.files[0]);
         setSelectedFile(e.target.files[0]);
     };
 
     const previewHandler = () => {
-        getFileImage(fileUpload);
         InputImageRef.current.click();
     };
 
-    console.log(src);
-
     return (
         <div className={cx('container')}>
-            {preview ? (
+            {!preview && src ? (
                 <img className={cx('image')} src={ImageDefault} alt="user default" />
             ) : (
-                <img className={cx('image')} src={!src || preview} alt="user default" />
+                <img className={cx('image')} src={src} alt="user default" />
             )}
             <Button className={cx('btn')} onClick={previewHandler}>
                 Tai Anh Len

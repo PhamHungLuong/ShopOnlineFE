@@ -1,9 +1,12 @@
 import classNames from 'classnames/bind';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 
 import styles from './ManageProduct.module.scss';
+import noProductImage from '../../assets/no_product.jpg';
+import { userContext } from '../../context/userContext';
 import Button from '../../components/Button';
+import Image from '../../components/Image';
 import Product from './Product';
 import FormProduct from './FromProduct/FormProduct';
 
@@ -13,33 +16,60 @@ function ManageProduct() {
     const [isShowFormPost, setIsShowFormPost] = useState(false);
     const [products, setProducts] = useState([]);
 
+    const userInfoContext = useContext(userContext);
+
     const showFormHandler = () => {
         setIsShowFormPost(!isShowFormPost);
     };
 
-    const userId = '633d2f3e655a73ee515398ea';
-
     useEffect(() => {
-        const fetchApi = async () => {
-            try {
-                const response = await axios.get(`http://localhost:5000/api/product/${userId}`);
+        if (userInfoContext.isAdmin) {
+            const fetchApi = async () => {
+                try {
+                    const response = await axios.get('http://localhost:5000/api/product');
+                    setProducts(response.data.products);
+                } catch (err) {
+                    console.log(err);
+                }
+            };
 
-                setProducts(response.data);
-            } catch (err) {
-                console.log(err);
-            }
-        };
+            fetchApi();
+        } else {
+            const fetchApi = async () => {
+                try {
+                    const response = await axios.get(
+                        `http://localhost:5000/api/product/user/${userInfoContext.userId}`,
+                    );
+                    setProducts(response.data.products);
+                } catch (err) {
+                    console.log(err);
+                }
+            };
 
-        fetchApi();
+            fetchApi();
+        }
     }, []);
+
+    const productDeleteHandler = (productId) => {
+        let currentProduct = [];
+        products.forEach((product) => {
+            if (product.id !== productId) {
+                currentProduct.push(product);
+            }
+        });
+
+        setProducts(currentProduct);
+    };
 
     return (
         <div className={cx('container')}>
             <div className={cx('header')}>Danh sách sản phẩm</div>
             <div className={cx('add-product')}>
-                <Button className={cx('btn')} primary onClick={showFormHandler}>
-                    {!isShowFormPost ? 'Add product' : 'Close Form'}
-                </Button>
+                {!userInfoContext.isAdmin && (
+                    <Button className={cx('btn')} primary onClick={showFormHandler}>
+                        {!isShowFormPost ? 'Add product' : 'Close Form'}
+                    </Button>
+                )}
             </div>
 
             {isShowFormPost && (
@@ -49,10 +79,28 @@ function ManageProduct() {
             )}
 
             <div className={cx('list-product')}>
-                <Product title="ao dai" description="dep qua" price={300} />
-                <Product title="ao dai" description="dep qua" price={300} />
-                <Product title="ao dai" description="dep qua" price={300} />
-                <Product title="ao dai" description="dep qua" price={300} />
+                {products && products.length !== 0 ? (
+                    products.map((product) => {
+                        return (
+                            <Product
+                                id={product.id}
+                                key={product.id}
+                                title={product.name}
+                                description={product.description}
+                                price={product.price}
+                                deleteProduct={productDeleteHandler}
+                            />
+                        );
+                    })
+                ) : (
+                    <div className={cx('no-product')}>
+                        <Image
+                            src={noProductImage}
+                            className={cx('image')}
+                            alt="Không có sản phẩm"
+                        />
+                    </div>
+                )}
             </div>
         </div>
     );
