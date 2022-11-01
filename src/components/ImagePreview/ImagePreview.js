@@ -3,13 +3,13 @@ import styles from './ImagePreview.module.scss';
 import { useState, useEffect, useRef } from 'react';
 
 import Button from '../Button';
-import ImageDefault from '../../assets/userDefault.jpg';
 
 const cx = classNames.bind(styles);
 
 function ImagePreview({ getFileImage, src }) {
     const [selectedFile, setSelectedFile] = useState();
     const [preview, setPreview] = useState(src);
+
     const [fileUpload, setFileUpload] = useState();
     const InputImageRef = useRef();
 
@@ -24,14 +24,13 @@ function ImagePreview({ getFileImage, src }) {
 
         fileReader.onload = () => {
             setFileUpload(fileReader.result);
-            getFileImage(fileUpload);
         };
 
         const objectUrl = URL.createObjectURL(selectedFile);
         setPreview(objectUrl);
 
-        //  leak memory
         return () => URL.revokeObjectURL(objectUrl);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedFile]);
 
     const onSelectFile = (e) => {
@@ -48,11 +47,14 @@ function ImagePreview({ getFileImage, src }) {
 
     return (
         <div className={cx('container')}>
-            {!preview && src ? (
-                <img className={cx('image')} src={ImageDefault} alt="user default" />
-            ) : (
-                <img className={cx('image')} src={src} alt="user default" />
-            )}
+            <div>
+                <img
+                    className={cx('image')}
+                    onChange={getFileImage(fileUpload)}
+                    src={preview}
+                    alt="Chưa có ảnh"
+                />
+            </div>
             <Button className={cx('btn')} onClick={previewHandler}>
                 Tai Anh Len
             </Button>

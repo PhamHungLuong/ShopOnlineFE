@@ -16,7 +16,7 @@ function Profile() {
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
     const [imageUrl, setImageUrl] = useState();
-    const [fileImage, setFileImage] = useState();
+    const [fileImage, setFileImage] = useState('');
     const [isSaveProfile, setIsSaveProfile] = useState(true);
     const nameDefault = name;
 
@@ -33,7 +33,6 @@ function Profile() {
                 setEmail(response.data.user.email);
                 setPassword(response.data.user.password);
                 setImageUrl(response.data.user.image);
-                console.log(response.data.user.image);
             } catch (err) {
                 console.log(err);
             }
@@ -56,21 +55,17 @@ function Profile() {
     };
 
     const passwordChangeHandler = (e) => {
-        setName(e.target.value);
+        setPassword(e.target.value);
     };
 
     const changeProfileHandler = async (e) => {
         e.preventDefault();
+
         const formDataProfile = new FormData();
         formDataProfile.append('name', name);
         formDataProfile.append('password', password);
         formDataProfile.append('image', fileImage);
         try {
-            // const response = await axios.post(
-            //     `http://localhost:5000/api/user/${userInfoContext.userId}`,
-            //     formData,
-            // );
-
             const response = await axios({
                 method: 'POST',
                 url: `http://localhost:5000/api/user/${userInfoContext.userId}`,
@@ -82,7 +77,6 @@ function Profile() {
             setEmail(response.data.user.email);
             setPassword(response.data.user.password);
             setImageUrl(response.data.user.image);
-            console.log(response.data.user.image);
         } catch (err) {
             console.log(err);
         }
@@ -133,7 +127,7 @@ function Profile() {
                 </form>
 
                 {/* Image Preview */}
-                <ImagePreview getFileImage={getFileImage} src={!!imageUrl ? imageUrl : undefined} />
+                <ImagePreview getFileImage={getFileImage} src={imageUrl} />
             </div>
         </div>
     );
