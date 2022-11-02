@@ -48,7 +48,7 @@ function Home() {
                                     id={product.id}
                                     title={product.name}
                                     price={product.price}
-                                    src="https://luv.vn/wp-content/uploads/2021/08/hinh-anh-gai-xinh-71.jpg"
+                                    src={product.image}
                                 />
                             );
                         })}

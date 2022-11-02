@@ -139,11 +139,9 @@ function Product() {
         <div className={cx('container')}>
             <div className={cx('product')}>
                 <div className={cx('image-product')}>
-                    <Image
-                        className={cx('image')}
-                        src="https://www.lamdieu.com/wp-content/uploads/2021/01/dang-yeu-voi-mau-vay-hoa-nhi.jpg"
-                        type="product"
-                    />
+                    {!!product && (
+                        <Image className={cx('image')} src={product.image} type="product" />
+                    )}
                 </div>
                 <div className={cx('content')}>
                     <div>

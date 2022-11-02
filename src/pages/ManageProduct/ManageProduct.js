@@ -74,7 +74,10 @@ function ManageProduct() {
 
             {isShowFormPost && (
                 <div className={cx('formProduct')}>
-                    <FormProduct />
+                    <FormProduct
+                        addProductHandler={setProducts}
+                        setIsShowFormPost={setIsShowFormPost}
+                    />
                 </div>
             )}
 
@@ -89,6 +92,7 @@ function ManageProduct() {
                                 description={product.description}
                                 price={product.price}
                                 deleteProduct={productDeleteHandler}
+                                src={product.image}
                             />
                         );
                     })

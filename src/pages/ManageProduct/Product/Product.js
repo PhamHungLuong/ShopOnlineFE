@@ -17,8 +17,15 @@ import { userContext } from '../../../context/userContext';
 
 const cx = classNames.bind(styles);
 
-function Product({ id, title, description, price, deleteProduct }) {
+function Product({ id, title, description, price, deleteProduct, src }) {
     const [isShowFormPost, setIsShowFormPost] = useState(false);
+    const [infoProduct, setInfoProduct] = useState({
+        id: id,
+        name: title,
+        description: description,
+        price: price,
+        image: src,
+    });
 
     const cartProductContext = useContext(cartContext);
     const userInfoContext = useContext(userContext);
@@ -47,15 +54,13 @@ function Product({ id, title, description, price, deleteProduct }) {
             <div className={cx('content')}>
                 <div className={cx('product')}>
                     <div className={cx('info')}>
-                        <Image
-                            src="https://media.phunutoday.vn/files/content/2020/06/29/mua-gi-o-dau-3-kieu-vay-mac-la-co-anh-dep-khi-di-du-lich-c27-5045910-1411.jpg"
-                            className={cx('image')}
-                            type="product"
-                        />
+                        <Image src={infoProduct.image} className={cx('image')} type="product" />
                         <div className={cx('text')}>
-                            <span className={cx('name')}>{title}</span>
-                            <span className={cx('description')}>Mo ta: {description}</span>
-                            <span className={cx('price')}>Gia: {price}</span>
+                            <span className={cx('name')}>{infoProduct.name}</span>
+                            <span className={cx('description')}>
+                                Mo ta: {infoProduct.description}
+                            </span>
+                            <span className={cx('price')}>Gia: {infoProduct.price}</span>
                         </div>
                     </div>
                     <div className={cx('button')}>
@@ -71,7 +76,17 @@ function Product({ id, title, description, price, deleteProduct }) {
                     </div>
                 </div>
             </div>
-            {isShowFormPost && <FormProduct />}
+            {isShowFormPost && (
+                <FormProduct
+                    id={id}
+                    name={infoProduct.name}
+                    description={infoProduct.description}
+                    price={infoProduct.price}
+                    src={infoProduct.image}
+                    setIsShowFormPost={setIsShowFormPost}
+                    setNewInfoProduct={setInfoProduct}
+                />
+            )}
             <ToastMessageContainer />
         </div>
     );
