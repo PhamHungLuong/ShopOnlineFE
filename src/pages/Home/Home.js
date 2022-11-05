@@ -7,11 +7,16 @@ import { faExclamation } from '@fortawesome/free-solid-svg-icons';
 import styles from './Home.module.scss';
 import Banner from './Banner/Banner';
 import Product from './Product/Product';
+import useHttpRequest from '../../Hooks/useHttpRequest/useHttpRequest';
+import { getFetchApi } from '../../services/HttpRequest/HttpRequest';
+import { notifyDisplay, ToastMessageContainer } from '../../components/ToastMessage/ToastMessage';
 
 const cx = classNames.bind(styles);
 
 function Home() {
     const [products, setProducts] = useState([]);
+
+    const notifyError = notifyDisplay('error', 'Không thể tải sản phẩm');
 
     useEffect(() => {
         const fetchApi = async () => {
@@ -20,7 +25,7 @@ function Home() {
 
                 setProducts(response.data.products);
             } catch (err) {
-                console.log(err);
+                notifyError();
             }
         };
 
@@ -55,6 +60,7 @@ function Home() {
                     </div>
                 )}
             </div>
+            <ToastMessageContainer />
         </div>
     );
 }

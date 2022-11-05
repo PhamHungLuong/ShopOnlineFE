@@ -8,7 +8,10 @@ import useDebounce from '../../../Hooks/useDebounce/useDebounce';
 import Button from '../../../components/Button/Button';
 import styles from './Search.module.scss';
 import ResultSearch from './ResultSearch/ResultSearch';
-// import LoadingSpinner from '../../../components/LoadingSpinner/LoadingSpinner';
+import {
+    notifyDisplay,
+    ToastMessageContainer,
+} from '../../../components/ToastMessage/ToastMessage';
 
 const cx = classNames.bind(styles);
 
@@ -16,10 +19,10 @@ function Search() {
     const [searchValue, setSearchValue] = useState('');
     const [searchResults, setSearchResults] = useState([]);
     const [isShowResult, setIsShowResult] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
     const inputRef = useRef();
 
     const debouncedValue = useDebounce(searchValue, 500);
+    const notifyError = notifyDisplay('error', 'Không thể tìm kiếm, vui lòng thử lại ');
 
     useEffect(() => {
         const fetchApi = async () => {
@@ -27,18 +30,15 @@ function Search() {
                 setSearchResults([]);
                 return;
             }
-            setIsLoading(true);
             try {
                 const response = await axios.get(
                     `http://localhost:5000/api/product/search/?product=${debouncedValue}`,
                 );
                 setSearchResults(response.data.products);
             } catch (err) {
-                console.log(err);
+                notifyError();
             }
         };
-
-        setIsLoading(false);
 
         fetchApi();
     }, [debouncedValue]);
@@ -101,6 +101,7 @@ function Search() {
                     })}
                 </div>
             )}
+            <ToastMessageContainer />
         </div>
     );
 }

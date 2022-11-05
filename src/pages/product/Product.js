@@ -52,7 +52,7 @@ function Product() {
                 setProduct(response.data.product);
                 setCreator(response.data.product.creator);
             } catch (err) {
-                console.log(err);
+                notifyError();
             }
         };
 
@@ -68,7 +68,7 @@ function Product() {
 
                 setComments(response.data.comments);
             } catch (err) {
-                console.log(err);
+                notifyError();
             }
         };
 
@@ -194,11 +194,7 @@ function Product() {
             </div>
             <div className={cx('creator')}>
                 <div className={cx('info')}>
-                    <Image
-                        type="user"
-                        className={cx('avatar')}
-                        src="https://anhdephd.vn/wp-content/uploads/2022/05/anh-gai-xinh-de-thuong.jpg"
-                    />
+                    {creator && <Image type="user" className={cx('avatar')} src={creator.image} />}
                     <div className={cx('name')}>{creator && creator.name}</div>
                 </div>
                 <Button

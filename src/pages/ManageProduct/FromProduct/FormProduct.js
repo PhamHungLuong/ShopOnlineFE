@@ -94,7 +94,6 @@ function FormProduct({
                 notifySuccess();
             } catch (err) {
                 notifyError();
-                console.log(err);
             }
         } else {
             try {
@@ -112,7 +111,6 @@ function FormProduct({
                 notifySuccess();
             } catch (err) {
                 notifyError();
-                console.log(err);
             }
         }
     };

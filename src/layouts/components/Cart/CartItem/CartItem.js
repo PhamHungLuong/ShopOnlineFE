@@ -7,7 +7,6 @@ import Image from '../../../../components/Image/Image';
 const cx = classNames.bind(styles);
 
 function CartItem({ title, price, src, onClick, isPaid }) {
-
     return (
         <div className={cx('container')} onClick={onClick}>
             <div className={cx('list-cart')}>

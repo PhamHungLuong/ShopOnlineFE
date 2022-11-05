@@ -16,6 +16,10 @@ import {
     VALIDATOR_MINLENGTH,
     VALIDATOR_REQUIRE,
 } from '../../../services/validators/validator';
+import {
+    notifyDisplay,
+    ToastMessageContainer,
+} from '../../../components/ToastMessage/ToastMessage';
 
 const cx = classNames.bind(styles);
 
@@ -28,6 +32,7 @@ function Login() {
     const [isValidPassword, setIsValidPassword] = useState(false);
 
     const infoUserContext = useContext(userContext);
+    const notifyError = notifyDisplay('error', 'Không thể đăng ký tài khoản, Vui lòng thử lại');
     let navigate = useNavigate();
 
     const changeNameHandler = (e) => {
@@ -57,7 +62,7 @@ function Login() {
                 response.data.email,
             );
         } catch (err) {
-            console.log(err);
+            notifyError();
         }
         navigate('/');
     };
@@ -120,6 +125,7 @@ function Login() {
                 </div>
             </div>
             <Footer />
+            <ToastMessageContainer />
         </div>
     );
 }

@@ -63,7 +63,7 @@ function Cart() {
                                         title={cart.productId.name}
                                         price={cart.productId.price}
                                         isPaid={cart.isPayment}
-                                        src="https://kenh14cdn.com/thumb_w/660/2020/5/28/0-1590653959375414280410.jpg"
+                                        src={cart.productId.image}
                                     />
                                 );
                             })}

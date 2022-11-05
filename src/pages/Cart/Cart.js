@@ -30,6 +30,7 @@ function Cart() {
                             price={cart.productId.price}
                             onDeleteCart={cartDeleteHandler}
                             isPayment={cart.isPayment}
+                            image={cart.productId.image}
                         />
                     );
                 })

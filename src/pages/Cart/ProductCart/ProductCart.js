@@ -15,7 +15,7 @@ import {
 
 const cx = classNames.bind(styles);
 
-function ProductCart({ title, quantity, price, isPayment, onDeleteCart, id }) {
+function ProductCart({ title, quantity, price, isPayment, onDeleteCart, id, image }) {
     const [amount, setAmount] = useState(quantity);
     const [newAmount, setNewAmount] = useState(quantity);
     const [isPaid, setIsPaid] = useState(isPayment);
@@ -85,11 +85,7 @@ function ProductCart({ title, quantity, price, isPayment, onDeleteCart, id }) {
         <div className={cx('container')}>
             <div className={cx('content')}>
                 <div className={cx('info')}>
-                    <Image
-                        className={cx('image')}
-                        type="product"
-                        src="https://image-us.eva.vn/upload/4-2021/images/2021-10-04/de-giu-hinh-anh-sanh-dieu-nang-can-biet-nhung-mau-vay-nen-va-khong-nen-sam-thu-nay-a6b24c1c4b0904822ec2b8ae45344ee8-1633343524-692-width600height600.jpg"
-                    />
+                    <Image className={cx('image')} type="product" src={image} />
                     <div className={cx('text')}>
                         <div className={cx('name')}>{title}</div>
                         <div className={cx('amount')}>So luong ban dau : {newAmount}</div>

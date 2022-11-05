@@ -8,6 +8,7 @@ import Input from '../../components/Input/Input';
 import ImagePreview from '../../components/ImagePreview/ImagePreview';
 import { VALIDATOR_REQUIRE } from '../../services/validators/validator';
 import { userContext } from '../../context/userContext';
+import { notifyDisplay, ToastMessageContainer } from '../../components/ToastMessage/ToastMessage';
 
 const cx = classNames.bind(styles);
 
@@ -21,6 +22,7 @@ function Profile() {
     const nameDefault = name;
 
     const userInfoContext = useContext(userContext);
+    const notifyError = notifyDisplay('error', 'Vui long thu lai');
 
     useEffect(() => {
         const fetchApi = async () => {
@@ -34,7 +36,7 @@ function Profile() {
                 setPassword(response.data.user.password);
                 setImageUrl(response.data.user.image);
             } catch (err) {
-                console.log(err);
+                notifyError();
             }
         };
 
@@ -78,7 +80,7 @@ function Profile() {
             setPassword(response.data.user.password);
             setImageUrl(response.data.user.image);
         } catch (err) {
-            console.log(err);
+            notifyError();
         }
     };
 
@@ -129,6 +131,7 @@ function Profile() {
                 {/* Image Preview */}
                 <ImagePreview getFileImage={getFileImage} src={imageUrl} />
             </div>
+            <ToastMessageContainer />
         </div>
     );
 }
